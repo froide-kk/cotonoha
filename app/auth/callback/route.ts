@@ -1,64 +1,24 @@
-import { createClient } from '@/utils/supabase/server'
-import { NextResponse } from 'next/server'
+import { createClient } from "@/utils/supabase/server";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  try {
-    const requestUrl = new URL(request.url)
-    const code = requestUrl.searchParams.get('code')
-    const origin = requestUrl.origin
-    const redirectTo = requestUrl.searchParams.get('redirect_to')
+  // The `/auth/callback` route is required for the server-side auth flow implemented
+  // by the SSR package. It exchanges an auth code for the user's session.
+  // https://supabase.com/docs/guides/auth/server-side/nextjs
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const origin = requestUrl.origin;
+  const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
 
-    if (!code) {
-      return NextResponse.redirect(
-        `${origin}/sign-in?error=auth_callback_error`,
-      )
-    }
-
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-
-    if (error) {
-      return NextResponse.redirect(
-        `${origin}/sign-in?error=${encodeURIComponent(error.message)}`,
-      )
-    }
-
-    // セッション取得を確認
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.redirect(`${origin}/sign-in?error=session_not_found`)
-    }
-
-    // オンボーディング状態のみをチェック
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('is_onboarded')  // テーブル設計に合わせて変更
-      .eq('id', user.id)
-      .single()
-
-    if (profileError) {
-      console.error('Profile fetch error:', profileError)
-      return NextResponse.redirect(`${origin}/sign-in?error=profile_fetch_error`)
-    }
-
-    // オンボーディングが未完了の場合
-    if (profile && profile.is_onboarded === false) {
-      return NextResponse.redirect(`${origin}/onboarding`)
-    }
-
-    // オンボーディング完了済みで、リダイレクト先が指定されている場合
-    if (redirectTo) {
-      return NextResponse.redirect(`${origin}${redirectTo}`)
-    }
-
-    // オンボーディング完了済みのデフォルトリダイレクト先（テーブル設計に応じて調整）
-    return NextResponse.redirect(`${origin}/`)
-  } catch (error) {
-    console.error('Auth callback error:', error)  // エラーログを追加
-    const origin = new URL(request.url).origin
-    return NextResponse.redirect(`${origin}/sign-in?error=unexpected_error`)
+  if (code) {
+    const supabase = await createClient();
+    await supabase.auth.exchangeCodeForSession(code);
   }
+
+  if (redirectTo) {
+    return NextResponse.redirect(`${origin}${redirectTo}`);
+  }
+
+  // URL to redirect to after sign up process completes
+  return NextResponse.redirect(`${origin}/protected`);
 }
