@@ -26,3 +26,15 @@ npx supabase start
 ```
 npx supabase stop
 ```
+
+## マイグレーション
+
+### マイグレーションファイル新規
+```
+npx supabase migration new [マイグレーションファイル名]
+```
+
+### マイグレーション実行
+```
+npx supabase migration up
+```
