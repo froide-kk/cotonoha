@@ -26,8 +26,8 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { DiaryPreview } from "./diary-preview";
-import { TextEditor } from "./text-editor";
+import { DiaryPreview } from "../diary-preview";
+import { TextEditor } from "../text-editor";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Terminal } from "lucide-react"
 
@@ -256,7 +256,6 @@ export function DiaryPostForm() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="public">公開</SelectItem>
-                    <SelectItem value="friends">親しい友達のみ</SelectItem>
                     <SelectItem value="private">非公開</SelectItem>
                   </SelectContent>
                 </Select>
