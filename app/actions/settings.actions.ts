@@ -1,32 +1,87 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { createClient } from "@/utils/supabase/server"
+
+// ユーザーアイコン変更
+export async function changeUserIcon({ currentIcon, newIcon }: { currentIcon: string; newIcon: string }) {
+  const supabase = await createClient()
+  const user = await supabase.auth.getUser()
+  if (!user.data.user) return { success: false, error: "未認証のユーザーです" }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ icon: newIcon })
+    .eq("id", user.data.user.id)
+
+  if (error) return { success: false, error: error.message }
+
+  revalidatePath("/settings")
+  return { success: true }
+}
+
+// ユーザー名変更
+export async function changeUserName({ currentName, newName }: { currentName: string; newName: string }) {
+  const supabase = await createClient()
+  const user = await supabase.auth.getUser()
+  if (!user.data.user) return { success: false, error: "未認証のユーザーです" }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ name: newName })
+    .eq("id", user.data.user.id)
+
+  if (error) return { success: false, error: error.message }
+
+  revalidatePath("/settings")
+  return { success: true }
+}
+
+// ユーザーメール変更
+export async function changeUserEmail({ currentEmail, newEmail }: { currentEmail: string; newEmail: string }) {
+  const supabase = await createClient()
+  const user = await supabase.auth.getUser()
+  if (!user.data.user) return { success: false, error: "未認証のユーザーです" }
+
+  if (user.data.user.email !== currentEmail) {
+    return { success: false, error: "現在のメールアドレスが一致しません" }
+  }
+
+  // メールアドレス変更
+  const { error } = await supabase.auth.updateUser({ email: newEmail })
+  if (error) return { success: false, error: error.message }
+
+  revalidatePath("/settings")
+  return { success: true }
+}
 
 // パスワード変更
-export async function changePassword({
-  currentPassword,
-  newPassword,
-}: {
-  currentPassword: string
-  newPassword: string
-}) {
-  // ここで実際のパスワード変更処理を実装
-  // 例: データベースへの接続、認証、パスワードハッシュ化など
+export async function changePassword({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) {
+  const supabase = await createClient()
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  })
 
-  // 成功したら、関連するパスをrevalidate
+  if (error) return { success: false, error: error.message }
+
   revalidatePath("/settings")
-
   return { success: true }
 }
 
 // アカウント削除
 export async function deleteAccount() {
-  // ここで実際のアカウント削除処理を実装
-  // 例: データベースからのユーザー削除、関連データの削除など
+  const supabase = await createClient()
+  const user = await supabase.auth.getUser()
+  if (!user.data.user) return { success: false, error: "未認証のユーザーです" }
 
-  // 成功したら、関連するパスをrevalidate
+  // ユーザーの関連データ削除
+  await supabase.from("profiles").delete().eq("id", user.data.user.id)
+
+  // アカウント削除
+  const { error } = await supabase.auth.admin.deleteUser(user.data.user.id)
+  if (error) return { success: false, error: error.message }
+
   revalidatePath("/")
-
   return { success: true }
 }
 
@@ -36,8 +91,7 @@ export async function saveNotificationSettings({
 }: {
   reminderEnabled: boolean
 }) {
-  // ここで実際の通知設定保存処理を実装
-  // 例: データベースへの設定保存など
+  // ここは実装保留
 
   // 成功したら、関連するパスをrevalidate
   revalidatePath("/settings")
@@ -53,8 +107,7 @@ export async function saveDisplaySettings({
   fontSize: string
   infiniteScroll: boolean
 }) {
-  // ここで実際の表示設定保存処理を実装
-  // 例: データベースへの設定保存など
+  // ここは実装保留
 
   // 成功したら、関連するパスをrevalidate
   revalidatePath("/settings")
@@ -68,10 +121,7 @@ export async function saveThemeSettings({
 }: {
   theme: string
 }) {
-  // ここで実際のテーマ設定保存処理を実装
-  // 例: データベースへの設定保存など
-
-  // 成功したら、関連するパスをrevalidate
+  // ここは実装保留
   revalidatePath("/settings")
 
   return { success: true }
@@ -83,10 +133,7 @@ export async function saveLanguageSettings({
 }: {
   language: string
 }) {
-  // ここで実際の言語設定保存処理を実装
-  // 例: データベースへの設定保存など
-
-  // 成功したら、関連するパスをrevalidate
+  // ここは実装保留
   revalidatePath("/settings")
 
   return { success: true }

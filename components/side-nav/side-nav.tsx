@@ -28,9 +28,29 @@ export default function SideNav() {
         icon: "settings",
         subItems: [
           {
-            path: "/settings/password",
-            label: "アカウント",
+            path: "/settings/user",
+            label: "アカウント設定",
             icon: "user",
+          },
+          {
+            path: "/settings/notification",
+            label: "通知設定",
+            icon: "bell",
+          },
+          {
+            path: "/settings/display",
+            label: "表示設定",
+            icon: "monitor",
+          },
+          {
+            path: "/settings/theme",
+            label: "テーマ設定",
+            icon: "palette",
+          },
+          {
+            path: "/settings/language",
+            label: "言語設定",
+            icon: "globe",
           },
         ],
       },
