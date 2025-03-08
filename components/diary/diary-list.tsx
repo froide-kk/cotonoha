@@ -7,7 +7,7 @@ export default async function DiaryList() {
   return (
     <>
       <div className="space-y-4">
-        {diaryList?.map((diary) => <DiaryItem diary={diary} />)}
+        {diaryList?.map((diary) => <DiaryItem key={diary.id} diary={diary} />)}
       </div>
     </>
   );
