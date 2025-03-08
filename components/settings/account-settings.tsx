@@ -53,6 +53,7 @@ export default function AccountSettings() {
     },
   })
 
+
   async function onSubmit(data: z.infer<typeof passwordFormSchema>) {
     setIsLoading(true)
     const { toast } = useToast()
@@ -103,6 +104,50 @@ export default function AccountSettings() {
 
   return (
     <div className="space-y-6">
+
+      {/* ユーザー名変更 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>ユーザー名変更</CardTitle>
+          <CardDescription>新しいユーザー名を入力してください。</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex space-x-4">
+            <Input type="text" placeholder="新しいユーザー名" />
+            <Button>更新</Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* メールアドレス変更 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>メールアドレス変更</CardTitle>
+          <CardDescription>新しいメールアドレスを入力してください。</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex space-x-4">
+            <Input type="email" placeholder="新しいメールアドレス" />
+            <Button>更新</Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ユーザーアイコンアップロード */}
+      <Card>
+        <CardHeader>
+          <CardTitle>ユーザーアイコンアップロード</CardTitle>
+          <CardDescription>新しいアイコンをアップロードしてください。</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex space-x-4 items-center">
+            <Input type="file" accept="image/*" />
+            <Button>アップロード</Button>
+          </div>
+        </CardContent>
+      </Card>
+
+
       <Card>
         <CardHeader>
           <CardTitle>パスワード変更</CardTitle>
@@ -157,6 +202,8 @@ export default function AccountSettings() {
           </Form>
         </CardContent>
       </Card>
+
+
 
       <Card>
         <CardHeader>
