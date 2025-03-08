@@ -29,13 +29,13 @@ DO UPDATE SET
     updated_at = now();
 
 -- 【2】diaries (日記テーブル) の初期データ
-INSERT INTO public.diaries (id, user_id, content, diary_date, posted_at, status, created_at, updated_at)
+INSERT INTO public.diaries (id, user_id, content, diary_date, posted_at, status, title, created_at, updated_at)
 VALUES
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', user1, '今日はとても楽しかった！', '2025-03-07', now(), 'public', now(), now()),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', user2, '新しい本を読み始めました。', '2025-03-06', now(), 'public', now(), now()),
-    ('cccccccc-cccc-cccc-cccc-cccccccccccc', user3, '美味しいカフェを見つけた！', '2025-03-05', now(), 'public', now(), now()),
-    ('dddddddd-dddd-dddd-dddd-dddddddddddd', user4, '今日はのんびり過ごしました。', '2025-03-04', now(), 'private', now(), now()),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', user5, '週末に旅行の計画を...', '2025-03-03', now(), 'draft', now(), now());
+    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', user1, '今日はとても楽しかった！', '2025-03-07', now(), 'public', '遊園地にいった！', now(), now()),
+    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', user2, '新しい本を読み始めました。', '2025-03-06', now(), 'public', '本買った', now(), now()),
+    ('cccccccc-cccc-cccc-cccc-cccccccccccc', user3, '美味しいカフェを見つけた！', '2025-03-05', now(), 'public', '今日の散歩！',　now(), now()),
+    ('dddddddd-dddd-dddd-dddd-dddddddddddd', user4, '今日はのんびり過ごしました。', '2025-03-04', now(), 'private', '久しぶりの休日',　now(), now()),
+    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', user5, '週末に旅行の計画を...', '2025-03-03', now(), 'draft', 'タイトル未記入', now(), now());
 
 -- 【3】likes (いいねテーブル) の初期データ
 INSERT INTO public.likes (id, user_id, diary_id, heart, thumbs_up, muscle, party, clap, created_at)
