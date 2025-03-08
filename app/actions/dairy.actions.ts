@@ -4,6 +4,13 @@ import { createClient } from "@/utils/supabase/server"
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+// モックデータの型定義
+type User = {
+  id: string;
+  name: string;
+  avatarUrl: string;
+};
+
 // 型定義
 export type DiaryEntry = {
   id: string
@@ -26,6 +33,7 @@ export type DiaryEntry = {
     clap: number
     total: number
   }
+
   userReactions: {
     heart: boolean
     thumbs_up: boolean
@@ -230,3 +238,32 @@ export async function toggleReaction(diaryId: string, reactionType: ReactionType
     }
   }
 }
+
+export async function getDiaryCounts() {
+  const supabase = await createClient();
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data } = await supabase.from('diaries').select('id').eq('user_id', user?.id);
+    return data?.length;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getDiaryList() {
+  const supabase = await createClient();
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data } = await supabase.from('diaries').select('*').eq('user_id', user?.id);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// 型をエクスポート
+export type { User };
