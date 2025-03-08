@@ -63,9 +63,6 @@ export function DiaryHeatmap({ diaryCountsData }: DiaryHeatmapProps) {
             }
             return <rect {...props} />;
           }}
-          legendRender={(legendProps) => (
-            <rect {...legendProps} rx={2} ry={2} />
-          )}
           panelColors={{
             0: "#ebedf0",
             2: "#c6e48b",
