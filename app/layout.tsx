@@ -6,15 +6,17 @@ import "./globals.css";
 import SideNav from "@/components/side-nav/side-nav";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import { Metadata } from "next";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Cotonoha",
   description: "日記を共有できる幸せなアプリケーション",
+  icons: { icon: "/favicon.ico" }
 };
 
 const geistSans = Geist({
@@ -61,7 +63,16 @@ export default async function RootLayout({
             <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
               <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
                 <div className="flex gap-5 items-center font-semibold">
-                  <Link href={"/"}>Cotonoha</Link>
+                  <Link href={"/"}>
+                  <span className="flex items-center">
+                    <img
+                      src="/COTONOHA.png"
+                      alt="Cotonoha"
+                      className="w-14 h-14 mr-2"
+                    />
+                     Cotonoha
+                  </span>
+                 </Link>
                 </div>
                 <HeaderAuth />
               </div>
