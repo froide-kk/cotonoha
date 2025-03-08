@@ -104,7 +104,7 @@ export default function SideNav() {
                 icon={item.icon}
                 subItems={item.subItems}
                 isExpanded={expandedMenu === item.path}
-                onClick={() => toggleMenu(item.path)}
+                onToggle={() => toggleMenu(item.path)}
               />
             ))}
           </ul>
