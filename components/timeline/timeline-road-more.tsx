@@ -1,55 +1,42 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import TimelineItem from './timeline-item';
-import { DiaryEntry, getTimelinePosts } from '@/app/actions/dairy.actions';
+import { DiaryEntry, getTimelinePosts } from "@/app/actions/dairy.actions"
+import { useState, useTransition, useEffect } from "react"
+import TimelineItem from "./timeline-item"
+import { useInView } from "react-intersection-observer"
 
-type TimelineLoadMoreProps = {
-  initialEntries: DiaryEntry[];
-  initialNextCursor: string | null;
-};
+type TimelineInfiniteScrollProps = {
+  initialEntries: DiaryEntry[]
+  initialNextCursor: string | null
+}
 
-export default function TimelineLoadMore({ 
+export default function TimelineInfiniteScroll({ 
   initialEntries, 
   initialNextCursor 
-}: TimelineLoadMoreProps) {
-  const [entries, setEntries] = useState<DiaryEntry[]>(initialEntries);
-  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
-  const [loading, setLoading] = useState(false);
-  const observerTarget = useRef(null);
+}: TimelineInfiniteScrollProps) {
+  const [entries, setEntries] = useState<DiaryEntry[]>(initialEntries)
+  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor)
+  const [isPending, startTransition] = useTransition()
+  
+  const { ref, inView } = useInView({
+    threshold: 0.5,
+    triggerOnce: false,
+  })
 
   useEffect(() => {
-    // 無限スクロールの設定
-    const observer = new IntersectionObserver(
-      async (entries) => {
-        if (entries[0].isIntersecting && nextCursor && !loading) {
-          setLoading(true);
-          
-          try {
-            const result = await getTimelinePosts(nextCursor);
-            
-            setEntries(prev => [...prev, ...result.entries]);
-            setNextCursor(result.nextCursor);
-          } catch (error) {
-            console.error('投稿の読み込み中にエラーが発生しました:', error);
-          } finally {
-            setLoading(false);
-          }
+    if (inView && nextCursor && !isPending) {
+      startTransition(async () => {
+        try {
+          const result = await getTimelinePosts(nextCursor)
+          setEntries(prev => [...prev, ...result.entries])
+
+          setNextCursor(result.nextCursor)
+        } catch (error) {
+          console.error('投稿の読み込みエラー:', error)
         }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
+      })
     }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
-      }
-    };
-  }, [nextCursor, loading]);
+  }, [inView, nextCursor, isPending])
 
   return (
     <div className="space-y-4">
@@ -59,10 +46,10 @@ export default function TimelineLoadMore({
       
       {nextCursor && (
         <div 
-          ref={observerTarget} 
+          ref={ref}
           className="py-4 flex items-center justify-center"
         >
-          {loading ? (
+          {isPending ? (
             <div className="flex items-center space-x-2">
               <svg className="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -71,16 +58,23 @@ export default function TimelineLoadMore({
               <span className="text-gray-600">読み込み中...</span>
             </div>
           ) : (
-            <div className="h-10 w-full"></div> // 交差を検知するための要素
+            <div className="h-10 w-full"></div> 
           )}
         </div>
       )}
-      
+
       {!nextCursor && entries.length > 0 && (
         <div className="text-center py-4 text-gray-500">
           これ以上の投稿はありません
         </div>
       )}
+      
+      {entries.length === 0 && (
+        <div className="text-center py-16 text-gray-500">
+          <p className="mb-2">タイムラインに表示する投稿がありません</p>
+          <p className="text-sm">フォローしているユーザーの投稿がここに表示されます</p>
+        </div>
+      )}
     </div>
-  );
+  )
 }

@@ -1,12 +1,11 @@
 import { Suspense } from 'react'
 import TimelineList from '@/components/timeline/timeline-list'
 
+
 export default function TimelinePage() {
   return (
     <main className='container mx-auto px-4 py-8 max-w-2xl'>
       <h1 className='text-3xl font-bold mb-6'>タイムライン</h1>
-      <p className='text-gray-600 mb-8'>最近24時間以内に投稿された日記</p>
-      
       <Suspense fallback={<TimelineSkeleton />}>
         <TimelineList />
       </Suspense>
@@ -32,10 +31,15 @@ function TimelineSkeleton() {
                 <div className="h-3 bg-gray-200 rounded w-full"></div>
                 <div className="h-3 bg-gray-200 rounded w-3/4"></div>
               </div>
+              <div className="flex mt-3 gap-2">
+                <div className="h-6 bg-gray-200 rounded w-12"></div>
+                <div className="h-6 bg-gray-200 rounded w-12"></div>
+                <div className="h-6 bg-gray-200 rounded w-12"></div>
+              </div>
             </div>
           </div>
         </div>
       ))}
     </div>
-  );
+  )
 }
