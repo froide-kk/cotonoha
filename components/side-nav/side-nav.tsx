@@ -8,8 +8,8 @@ export default function SideNav() {
         icon: "home", 
       },
       {
-        path: "/diary",
-        label: "日記",
+        path: "/diary/new",
+        label: "日記を書く",
         icon: "book-open",
       },
       {
