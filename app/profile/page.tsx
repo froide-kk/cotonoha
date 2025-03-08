@@ -38,6 +38,10 @@ export default async function ProfilePage() {
         </TabsList>
         <TabsContent value="contribution-map">
           <div className="mt-10">
+            <div className="flex justify-center items-center mb-8">
+              <img  src="/images/tree_growth/old_tree.png"/>
+            </div>
+
             <h1 className="text-3xl font-bold mb-6">
               あなたの日記タイムライン
             </h1>
