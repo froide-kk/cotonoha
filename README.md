@@ -39,6 +39,8 @@ npx supabase migration new [マイグレーションファイル名]
 npx supabase migration up
 ```
 
+```
+
 ### テストユーザー生成方法
 
 1. auth.userの生成
