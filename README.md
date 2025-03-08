@@ -39,6 +39,23 @@ npx supabase migration new [マイグレーションファイル名]
 npx supabase migration up
 ```
 
+### テストユーザー生成方法
+
+1. auth.userの生成
+
+```
+node createTestUser.js
+```
+
+※ 生成されるテストユーザーのUUIDをcotonoha/supabase/seed.sqlに記載
+
+2. auth.userに紐づいたテストデータの作成
+
+```
+psql -h 127.0.0.1 -p 54322 -U postgres -d postgres -f supabase/seed.sql
+```
+
+※設定値は `npx supabase status` のDB URLを確認
 ## supabase 便利コマンド
 
 ### 現在利用しているsupabaseサービス一覧表示
