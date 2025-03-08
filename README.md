@@ -1,4 +1,4 @@
-# kotonoha
+# cotonoha
 
 ## ローカル環境
 
