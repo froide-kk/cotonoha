@@ -10,7 +10,7 @@ export async function getFollowingUserIds() {
     try {
         const { data: { user } } = await supabase.auth.getUser();
 
-        const { data } = await supabase.from('follows').select('follower_id, following_id, profiles( user_name )').eq('follower_id', user?.id);
+        const { data } = await supabase.from('follows').select('follower_id, following_id').eq('follower_id', user?.id);
         const followingIds = data?.map(item => item.following_id);
         return followingIds;
     } catch (e) {
@@ -24,9 +24,9 @@ export async function getFollowerUserIds() {
     try {
         const { data: { user } } = await supabase.auth.getUser();
 
-        const { data } = await supabase.from('follows').select('follower_id, following_id, profiles( user_name )').eq('following_id', user?.id);
-        const followeredIds = data?.map(item => item.follower_id);
-        return followeredIds;
+        const { data } = await supabase.from('follows').select('follower_id, following_id').eq('following_id', user?.id);
+        const followerIds = data?.map(item => item.follower_id);
+        return followerIds;
     } catch (e) {
         console.error(e);
     }

@@ -13,6 +13,7 @@ interface FriendsProps {
 }
 
 export default function Friends({ title, friends }: FriendsProps) {
+
   return (
     <>
       <Dialog>
@@ -28,9 +29,9 @@ export default function Friends({ title, friends }: FriendsProps) {
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>
-             <ul>
+             <ul className="py-2">
                 {friends.map((friend) => (
-                  <li key={friend}>{friend}</li>
+                  <li className="border-b-2 mb-2 py-2" key={friend}>{friend}</li>
                 ))}
              </ul>
             </DialogDescription>
