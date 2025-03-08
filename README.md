@@ -34,9 +34,14 @@ npx supabase stop
 npx supabase migration new [マイグレーションファイル名]
 ```
 
-### マイグレーション実行
+### マイグレーション実行(フォルダ内の未適用のマイグレーションファイルのみ)
 ```
 npx supabase migration up
+```
+
+### マイグレーション実行(すでに適用済みのマイグレーションも含めて、すべてのマイグレーションを適用)
+```
+npx supabase migration up --include-all
 ```
 
 ### テストユーザー生成方法
