@@ -1,4 +1,4 @@
-# kotonoha
+# cotonoha
 
 ## ローカル環境
 
@@ -37,4 +37,11 @@ npx supabase migration new [マイグレーションファイル名]
 ### マイグレーション実行
 ```
 npx supabase migration up
+```
+
+## supabase 便利コマンド
+
+### 現在利用しているsupabaseサービス一覧表示
+```
+npx supabase status
 ```
