@@ -64,7 +64,9 @@ export function DiaryPostForm({ draftData }: DiaryPostFormProps) {
       setDiaryTitle(draftData.title || "");
       setDiaryContent(draftData.content || "");
       // ステータスがあれば設定（下書きの場合はdraftではなくpublicをデフォルト値に）
-      setStatus(draftData.status === "draft" ? "public" : (draftData.status || "public"));
+      setStatus(
+        draftData.status === "draft" ? "public" : draftData.status || "public"
+      );
       // いいね表示設定があれば設定（ない場合はデフォルト値）
       setShowLikes(
         draftData.show_likes !== undefined ? draftData.show_likes : true
@@ -108,9 +110,8 @@ export function DiaryPostForm({ draftData }: DiaryPostFormProps) {
       }
 
       // ステータスを確認 - 必ずpublicかprivateになるようにする
-      const publishStatus = status === "public" || status === "private" 
-        ? status 
-        : "public"; // デフォルトはpublic
+      const publishStatus =
+        status === "public" || status === "private" ? status : "public"; // デフォルトはpublic
 
       console.log("日記を投稿:", {
         user_id: user.id, // 認証済みユーザーのID
@@ -160,13 +161,12 @@ export function DiaryPostForm({ draftData }: DiaryPostFormProps) {
       // 成功メッセージを表示 (一瞬だけ表示されることになる)
       setSavingMessage("投稿完了");
       setSuccessMessage("日記を投稿しました");
-      
+
       // フォームをリセット
       resetForm();
-      
+
       // 投稿成功後にdiary/newへリダイレクト
       router.push("/diary/new");
-      
     } catch (error) {
       console.error("投稿エラー:", error);
       setErrorMessage(
