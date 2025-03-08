@@ -1,4 +1,4 @@
-# kotonoha
+# cotonoha
 
 ## ローカル環境
 
@@ -55,4 +55,10 @@ node createTestUser.js
 psql -h 127.0.0.1 -p 54322 -U postgres -d postgres -f supabase/seed.sql
 ```
 
-※設定値はnpx supabase startのDB URLを確認
+※設定値は `npx supabase status` のDB URLを確認
+## supabase 便利コマンド
+
+### 現在利用しているsupabaseサービス一覧表示
+```
+npx supabase status
+```
