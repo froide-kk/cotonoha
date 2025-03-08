@@ -19,7 +19,7 @@ export default async function Profile() {
         <div>
           <Avatar>
             <AvatarImage src={profile.icon} />
-            <AvatarFallback>名もなき</AvatarFallback>
+            <AvatarFallback>名も無き子</AvatarFallback>
           </Avatar>
         </div>
         <div className="flex flex-col gap-2">

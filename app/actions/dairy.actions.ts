@@ -152,11 +152,22 @@ export async function getDiaryCounts() {
 
     const { data } = await supabase.from('diaries').select('id').eq('user_id', user?.id);
     return data?.length;
-   return
   } catch (e) {
     console.error(e);
   }
+}
 
+export async function getDiaryList() {
+  const supabase = await createClient();
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data } = await supabase.from('diaries').select('*').eq('user_id', user?.id);
+    return data;
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 // 型をエクスポート
