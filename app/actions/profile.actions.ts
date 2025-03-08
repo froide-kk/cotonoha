@@ -5,6 +5,28 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache';
 
+export async function getProfile() {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    redirect('/sign-in')
+  }
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single()
+
+  if (error) {
+    console.error('Profile fetch error:', error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true, profile: data }
+}
+
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient()
 

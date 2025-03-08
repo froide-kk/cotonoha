@@ -1,15 +1,13 @@
-import { getTimelinePosts } from "@/app/actions/dairy.actions";
+import { getDiaryList } from "@/app/actions/dairy.actions";
 import DiaryItem from "./diary-item";
 
 export default async function DiaryList() {
-  // 初期データを取得
-  const { entries } = await getTimelinePosts();
+  const diaryList = await getDiaryList();
+
   return (
     <>
       <div className="space-y-4">
-        {entries.map((entry) => (
-          <DiaryItem entry={{ ...entry, id: Number(entry.id), createdAt: new Date(entry.createdAt) }} />
-        ))}
+        {diaryList?.map((diary) => <DiaryItem key={diary.id} diary={diary} />)}
       </div>
     </>
   );
