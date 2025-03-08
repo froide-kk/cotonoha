@@ -1,41 +1,45 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Friends from "../friends/friends";
+import {
+  getFollowerUserIds,
+  getFollowingUserIds,
+} from "@/app/actions/follows.action";
+import { getProfile } from "@/app/actions/profile.actions";
+import { getDiaryCounts } from "@/app/actions/dairy.actions";
 
-export default function Profile() {
-  const friends = ["friend1", "friend2", "friend3"];
+export default async function Profile() {
+  const followingIds = (await getFollowingUserIds()) || [];
+  const followerIds = (await getFollowerUserIds()) || [];
+  const { profile } = await getProfile();
+  const diaryCounts = await getDiaryCounts();
 
   return (
     <>
       <div className="flex flex-row border-b-2 gap-8 pb-10">
         <div>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={profile.icon} />
+            <AvatarFallback>名も無き子</AvatarFallback>
           </Avatar>
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl">My Name</h2>
+          <h2 className="text-xl">{profile.user_name}</h2>
           <div className="flex flex-row gap-4">
-            <div>
+            <div className="flex flex-row gap-1">
               <span>投稿数</span>
-              <span className="font-bold"> 100</span>
+              <span className="font-bold">{diaryCounts}</span>
             </div>
             <div>
-              <Friends title="フォロワー" friends={friends} />
+              <Friends title="フォロワー" friends={followingIds} />
             </div>
 
             <div>
               <div>
-              <Friends title="フォロー中" friends={friends} />
+                <Friends title="フォロー中" friends={followerIds} />
               </div>
             </div>
           </div>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam
-            quisquam fugit sapiente voluptatibus quod harum doloremque animi
-            commodi obcaecati quo repellendus sit quae, necessitatibus vero
-            suscipit perferendis veniam. Fugiat, fuga.
-          </p>
+          <p>{profile.bio}</p>
         </div>
       </div>
     </>
