@@ -76,30 +76,28 @@ export function DiaryPostForm() {
 
       console.log("日記を投稿:", {
         user_id: user.id, // 認証済みユーザーのID
-          title: diaryTitle,
-          content: diaryContent,
-          diary_date: diaryDate,
-          status: status,
-          show_likes: showLikes,
-          posted_at: posted_at,
-          created_at: now,
-          updated_at: now,
+        title: diaryTitle,
+        content: diaryContent,
+        diary_date: diaryDate,
+        status: status,
+        show_likes: showLikes,
+        posted_at: posted_at,
+        created_at: now,
+        updated_at: now,
       });
 
       // Supabaseにデータを保存
-      const { error } = await supabase
-        .from("diaries")
-        .insert({
-          user_id: user.id, // 認証済みユーザーのID
-          title: diaryTitle,
-          content: diaryContent,
-          diary_date: diaryDate,
-          status: status,
-          show_likes: showLikes,
-          posted_at: posted_at,
-          created_at: now,
-          updated_at: now,
-        });
+      const { error } = await supabase.from("diaries").insert({
+        user_id: user.id, // 認証済みユーザーのID
+        title: diaryTitle,
+        content: diaryContent,
+        diary_date: diaryDate,
+        status: status,
+        show_likes: showLikes,
+        posted_at: posted_at,
+        created_at: now,
+        updated_at: now,
+      });
 
       if (error) throw error;
 
@@ -145,19 +143,17 @@ export function DiaryPostForm() {
       }
 
       // Supabaseにデータを保存（下書きとして）
-      const { error } = await supabase
-        .from("diaries")
-        .insert({
-          user_id: user.id,
-          content: diaryContent,
-          diary_date: diaryDate,
-          show_likes: showLikes,
-          posted_at: null, // 下書きは投稿日時なし
-          created_at: now,
-          updated_at: now,
-          status: "draft", // 下書きは非公開
-          title: diaryTitle,
-        });
+      const { error } = await supabase.from("diaries").insert({
+        user_id: user.id,
+        content: diaryContent,
+        diary_date: diaryDate,
+        show_likes: showLikes,
+        posted_at: null, // 下書きは投稿日時なし
+        created_at: now,
+        updated_at: now,
+        status: "draft", // 下書きは非公開
+        title: diaryTitle,
+      });
 
       if (error) throw error;
 
