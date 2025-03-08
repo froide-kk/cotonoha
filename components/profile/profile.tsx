@@ -1,6 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Friends from "../friends/friends";
 
 export default function Profile() {
+  const friends = ["friend1", "friend2", "friend3"];
+
   return (
     <>
       <div className="flex flex-row border-b-2 gap-8 pb-10">
@@ -15,16 +18,15 @@ export default function Profile() {
           <div className="flex flex-row gap-4">
             <div>
               <span>投稿数</span>
-              <span> 100</span>
+              <span className="font-bold"> 100</span>
             </div>
             <div>
-              <span>フォロワー</span>
-              <span> 100</span>
+              <Friends title="フォロワー" friends={friends} />
             </div>
+
             <div>
               <div>
-                <span>フォロー中</span>
-                <span> 100</span>
+              <Friends title="フォロー中" friends={friends} />
               </div>
             </div>
           </div>

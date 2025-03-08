@@ -12,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DiaryCounts } from "@/components/profile/diary-counts";
+import DiaryList from "@/components/diary/diary-list";
 
 export default async function ProfilePage() {
   // モックデータを生成
@@ -66,6 +67,7 @@ export default async function ProfilePage() {
             <p className="text-muted-foreground mb-8">
               あなたの日記一覧です。
             </p>
+            <DiaryList/>
           </div>
         </TabsContent>
       </Tabs>
