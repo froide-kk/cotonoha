@@ -5,7 +5,6 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import SideNav from "@/components/side-nav/side-nav";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/server";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -22,32 +21,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // ユーザーの認証状態とオンボーディング状態を確認
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // デフォルトではサイドメニューを表示しない
-  let showSideNav = false;
-
-  // ユーザーが認証済みの場合、オンボーディング状態を確認
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_onboarded")
-      .eq("id", user.id)
-      .single();
-
-    // オンボーディングが完了している場合のみサイドメニューを表示
-    showSideNav = profile?.is_onboarded === true;
-  }
-
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
@@ -59,17 +37,16 @@ export default async function RootLayout({
         >
           <main className="min-h-screen flex flex-col">
             <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-              <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-                <div className="flex gap-5 items-center font-semibold">
-                  <Link href={"/"}>Cotonoha</Link>
+            <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
+                  <div className="flex gap-5 items-center font-semibold">
+                    <Link href={"/"}>Cotonoha</Link>
+                  </div>
+                  <HeaderAuth />
                 </div>
-                <HeaderAuth />
-              </div>
             </nav>
 
             <div className="flex flex-1 w-full max-w-7xl mx-auto">
-              {/* 条件付きでサイドメニューを表示 */}
-              {showSideNav ? <SideNav /> : null}
+              <SideNav />
               <div className="flex-1 p-6 md:p-8">
                 {children}
               </div>
@@ -83,7 +60,9 @@ export default async function RootLayout({
                   target="_blank"
                   className="font-bold hover:underline"
                   rel="noreferrer"
-                  />             
+                >
+                  Supabase
+                </a>
               </p>
               <ThemeSwitcher />
             </footer>
