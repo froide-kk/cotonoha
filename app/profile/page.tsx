@@ -37,14 +37,12 @@ export default async function ProfilePage() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="contribution-map">
+          <h1 className="text-3xl font-bold mb-6">あなたの日記タイムライン</h1>
           <div className="mt-10">
             <div className="flex justify-center items-center mb-8">
-              <img  src="/images/tree_growth/old_tree.png"/>
+              <img src="/images/tree_growth/old_tree.png" />
             </div>
 
-            <h1 className="text-3xl font-bold mb-6">
-              あなたの日記タイムライン
-            </h1>
             <p className="text-muted-foreground mb-8">
               過去12ヶ月間の日記投稿状況を一目で確認できます。色が濃いほど多くの日記を書いた日です。
             </p>
@@ -68,10 +66,8 @@ export default async function ProfilePage() {
         <TabsContent value="my-diary">
           <div className="mt-10">
             <h1 className="text-3xl font-bold mb-6">あなたの日記一覧</h1>
-            <p className="text-muted-foreground mb-8">
-              あなたの日記一覧です。
-            </p>
-            <DiaryList/>
+            <p className="text-muted-foreground mb-8">あなたの日記一覧です。</p>
+            <DiaryList />
           </div>
         </TabsContent>
       </Tabs>
