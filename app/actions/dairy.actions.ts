@@ -1,5 +1,7 @@
 'use server'
 
+import { createClient } from "@/utils/supabase/server";
+
 // モックデータの型定義
 type User = {
   id: string;
@@ -122,7 +124,7 @@ const mockDiaryEntries: DiaryEntry[] = [
 export async function getTimelinePosts(cursor?: string, limit: number = 5) {
   // サーバー遅延をシミュレート
   await new Promise(resolve => setTimeout(resolve, 500));
-  
+
   let startIndex = 0;
   if (cursor) {
     const cursorIndex = mockDiaryEntries.findIndex(entry => entry.id === cursor);
@@ -130,16 +132,31 @@ export async function getTimelinePosts(cursor?: string, limit: number = 5) {
       startIndex = cursorIndex + 1;
     }
   }
-  
+
   const entries = mockDiaryEntries.slice(startIndex, startIndex + limit);
   const nextCursor = entries.length === limit && startIndex + limit < mockDiaryEntries.length
     ? entries[entries.length - 1].id
     : null;
-  
+
   return {
     entries,
     nextCursor
   };
+}
+
+export async function getDiaryCounts() {
+  const supabase = await createClient();
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data } = await supabase.from('diaries').select('id').eq('user_id', user?.id);
+    return data?.length;
+   return
+  } catch (e) {
+    console.error(e);
+  }
+
 }
 
 // 型をエクスポート
