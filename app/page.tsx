@@ -19,15 +19,16 @@ function getCurrentSeason(): string {
   const year = getYear(now);
   const { springEquinox, summerSolstice, autumnEquinox, winterSolstice } = getSeasonDates(year);
 
-  if (now >= springEquinox && now < summerSolstice) {
-    return "spring";
-  } else if (now >= summerSolstice && now < autumnEquinox) {
-    return "summer";
-  } else if (now >= autumnEquinox && now < winterSolstice) {
-    return "autumn";
-  } else {
-    return "winter";
-  }
+  // if (now >= springEquinox && now < summerSolstice) {
+  //   return "spring";
+  // } else if (now >= summerSolstice && now < autumnEquinox) {
+  //   return "summer";
+  // } else if (now >= autumnEquinox && now < winterSolstice) {
+  //   return "autumn";
+  // } else {
+  //   return "winter";
+  // }
+  return "summer" //一時的に夏に設定。
 }
 
 // 季節の木の画像パス
@@ -51,26 +52,17 @@ const currentSeason = getCurrentSeason();
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center gap-6 px-4">
-      <h1 className="text-2xl font-bold">
-        現在の季節: {" "}
-        {currentSeason === "spring"
-          ? "🌸 春"
-          : currentSeason === "summer"
-          ? "☀️ 夏"
-          : currentSeason === "autumn"
-          ? "🍁 秋"
-          : "❄️ 冬"}
-      </h1>
-
+    <main className="flex flex-col items-center justify-center min-h-screen gap-6 px-4 bg-transparent">
       {/* 季節の木の画像 */}
-      <Image src={getTreeImage(currentSeason)} alt="Seasonal Tree" width={200} height={250} className="rounded-lg shadow-lg" />
-
-      {/* 季節の説明 */}
-      {currentSeason === "spring" && <p className="text-lg text-pink-500">春の季節です。</p>}
-      {currentSeason === "summer" && <p className="text-lg text-yellow-500">夏の季節です。</p>}
-      {currentSeason === "autumn" && <p className="text-lg text-orange-500">秋の季節です。</p>}
-      {currentSeason === "winter" && <p className="text-lg text-blue-500">冬の季節です。</p>}
+      <Image
+        src={getTreeImage(currentSeason)}
+        alt="Seasonal Tree"
+        width={600}
+        height={700}
+        className="rounded-lg bg-transparent"
+      />
     </main>
   );
 }
+
+
