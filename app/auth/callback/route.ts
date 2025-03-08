@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     // オンボーディング状態のみをチェック
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('is_onboarded')  // テーブル設計に合わせて変更
+      .select('is_onboarded')
       .eq('id', user.id)
       .single()
 
@@ -54,10 +54,8 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}${redirectTo}`)
     }
 
-    // オンボーディング完了済みのデフォルトリダイレクト先（テーブル設計に応じて調整）
-    return NextResponse.redirect(`${origin}/`)
+    return NextResponse.redirect(`${origin}/timeline`)
   } catch (error) {
-    console.error('Auth callback error:', error)  // エラーログを追加
     const origin = new URL(request.url).origin
     return NextResponse.redirect(`${origin}/sign-in?error=unexpected_error`)
   }
