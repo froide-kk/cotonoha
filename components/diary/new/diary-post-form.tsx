@@ -10,32 +10,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardFooter
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import {
-  Clock,
-  Save,
-  Eye,
-  Send,
-  ChevronLeft,
-  AlertCircle
-} from "lucide-react";
+import { Clock, Save, Eye, Send, ChevronLeft, AlertCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { DiaryPreview } from "./diary-preview";
-import { TextEditor } from "./text-editor";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Terminal } from "lucide-react"
+import { DiaryPreview } from "../diary-preview";
+import { TextEditor } from "../text-editor";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
+import { createClient } from "@/utils/supabase/client"; // クライアント用のSupabaseクライアントをインポート
 
 export function DiaryPostForm() {
   const [activeTab, setActiveTab] = useState("write");
   const [diaryContent, setDiaryContent] = useState("");
   const [diaryTitle, setDiaryTitle] = useState("");
-  const [privacy, setPrivacy] = useState("public");
+  const [status, setStatus] = useState("public");
   const [showLikes, setShowLikes] = useState(true);
   const [scheduledTime, setScheduledTime] = useState("");
   const [contentError, setContentError] = useState<string | null>(null);
@@ -62,35 +52,56 @@ export function DiaryPostForm() {
     setIsSubmitting(true);
 
     try {
-      // モック: ここで実際はSupabaseにデータ保存する処理を実行
+      // 現在の日時を取得
+      const now = new Date().toISOString();
+      // 投稿日時（予約投稿の場合はその時間、そうでなければ現在時刻）
+      const posted_at = scheduledTime
+        ? new Date(scheduledTime).toISOString()
+        : now;
+      // 日記の日付（投稿日）
+      const diaryDate = posted_at.split("T")[0]; // YYYY-MM-DD形式で取得
+
+      // クライアントサイド用のSupabaseクライアントを作成
+      const supabase = createClient();
+
+      // 認証済みユーザー情報を取得
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        throw new Error("ユーザーが認証されていません");
+      }
+
       console.log("日記を投稿:", {
-        title: diaryTitle,
-        content: diaryContent,
-        privacy: privacy,
-        showLikes: showLikes,
-        scheduledTime: scheduledTime || null,
-      });
-
-      // 処理完了を模擬するため少し待機
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // 実際の実装ではここでSupabaseのコードを記述
-      /*
-      const { data, error } = await supabase
-        .from('diaries')
-        .insert({
+        user_id: user.id, // 認証済みユーザーのID
           title: diaryTitle,
           content: diaryContent,
-          privacy: privacy,
+          diary_date: diaryDate,
+          status: status,
           show_likes: showLikes,
-          scheduled_time: scheduledTime || null,
-          user_id: userId,  // 認証済みユーザーのID
-          is_draft: false
-        })
-        .select();
+          posted_at: posted_at,
+          created_at: now,
+          updated_at: now,
+      });
+
+      // Supabaseにデータを保存
+      const { error } = await supabase
+        .from("diaries")
+        .insert({
+          user_id: user.id, // 認証済みユーザーのID
+          title: diaryTitle,
+          content: diaryContent,
+          diary_date: diaryDate,
+          status: status,
+          show_likes: showLikes,
+          posted_at: posted_at,
+          created_at: now,
+          updated_at: now,
+        });
 
       if (error) throw error;
-      */
 
       // 成功メッセージを表示
       setSavingMessage("投稿完了");
@@ -115,36 +126,40 @@ export function DiaryPostForm() {
     setIsSavingDraft(true);
 
     try {
-      // モック: ここで実際はSupabaseにデータ保存する処理を実行
-      console.log("下書きを保存:", {
-        title: diaryTitle,
-        content: diaryContent,
-        privacy: privacy,
-        showLikes: showLikes,
-        scheduledTime: scheduledTime || null,
-        is_draft: true,
-      });
+      // 現在の日時を取得
+      const now = new Date().toISOString();
+      // 日記の日付（現在日）
+      const diaryDate = now.split("T")[0]; // YYYY-MM-DD形式で取得
 
-      // 処理完了を模擬するため少し待機
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // クライアントサイド用のSupabaseクライアントを作成
+      const supabase = createClient();
 
-      // 実際の実装ではここでSupabaseのコードを記述
-      /*
-      const { data, error } = await supabase
-        .from('diaries')
+      // 認証済みユーザー情報を取得
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        throw new Error("ユーザーが認証されていません");
+      }
+
+      // Supabaseにデータを保存（下書きとして）
+      const { error } = await supabase
+        .from("diaries")
         .insert({
-          title: diaryTitle,
+          user_id: user.id,
           content: diaryContent,
-          privacy: privacy,
+          diary_date: diaryDate,
           show_likes: showLikes,
-          scheduled_time: scheduledTime || null,
-          user_id: userId,  // 認証済みユーザーのID
-          is_draft: true
-        })
-        .select();
+          posted_at: null, // 下書きは投稿日時なし
+          created_at: now,
+          updated_at: now,
+          status: "draft", // 下書きは非公開
+          title: diaryTitle,
+        });
 
       if (error) throw error;
-      */
 
       // 成功メッセージを表示
       setSavingMessage("保存完了");
@@ -161,7 +176,7 @@ export function DiaryPostForm() {
   const resetForm = () => {
     setDiaryTitle("");
     setDiaryContent("");
-    setPrivacy("public");
+    setStatus("public");
     setShowLikes(true);
     setScheduledTime("");
   };
@@ -186,7 +201,7 @@ export function DiaryPostForm() {
   const previewData = {
     title: diaryTitle || "",
     content: diaryContent || "ここに内容が表示されます",
-    privacy: privacy || "公開",
+    status: status || "公開",
     createdAt: scheduledTime ? new Date(scheduledTime) : new Date(),
     author: {
       name: "ユーザー名",
@@ -209,7 +224,7 @@ export function DiaryPostForm() {
           {/* 成功メッセージ */}
           {successMessage && (
             <Alert>
-              <Terminal className="h-4 w-4 mr-1 pt-3" />
+              <Terminal className="h-4 w-4 mr-1" />
               <AlertTitle>{savingMessage}</AlertTitle>
               <AlertDescription>{successMessage}</AlertDescription>
             </Alert>
@@ -249,14 +264,13 @@ export function DiaryPostForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="privacy">公開設定</Label>
-                <Select value={privacy} onValueChange={setPrivacy}>
-                  <SelectTrigger id="privacy">
+                <Label htmlFor="status">公開設定</Label>
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger id="status">
                     <SelectValue placeholder="公開設定を選択" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="public">公開</SelectItem>
-                    <SelectItem value="friends">親しい友達のみ</SelectItem>
                     <SelectItem value="private">非公開</SelectItem>
                   </SelectContent>
                 </Select>
@@ -271,7 +285,13 @@ export function DiaryPostForm() {
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
                   />
-                  <Button variant="outline" size="icon" type="button">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    type="button"
+                    onClick={() => setScheduledTime("")}
+                    title="スケジュールをクリア"
+                  >
                     <Clock className="h-4 w-4" />
                   </Button>
                 </div>
@@ -298,7 +318,7 @@ export function DiaryPostForm() {
             variant="outline"
             type="button"
             onClick={handleSaveDraft}
-            disabled={isSavingDraft}
+            disabled={isSavingDraft || isSubmitting}
           >
             <Save className="h-4 w-4 mr-2" />
             {isSavingDraft ? "保存中..." : "下書きを保存"}
@@ -325,7 +345,7 @@ export function DiaryPostForm() {
             )}
             <Button
               type="button"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSavingDraft}
               onClick={handleSubmitDiary}
             >
               <Send className="h-4 w-4 mr-2" />
